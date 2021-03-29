@@ -1,0 +1,273 @@
+﻿@model WebProgram.Models.Users.IndexViewModel
+<!DOCTYPE html>
+@section AuthStatus{
+    @Html.Partial("_AuthPartial", new WebProgram.Models.Shared.AuthModel() { CurrentUser = Model.CurrentUser })
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UsersData</title>
+    <link rel="stylesheet" href="~/Bootstrap/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/IndexUser.css" type="text/css" />
+    <script>
+        var allRoles =  @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model.AllRoles));
+        
+        const tbody = document.getElementById('tbody');
+
+        function deleteUser(id) {
+            var formData = new FormData();
+            formData.append('id', id);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Users/RemoveUserJson");
+
+            xhr.onloadend = function () {
+                document.getElementById(id).remove();
+            };
+            xhr.send(formData);
+        }
+
+        function getJson(btn, pageSize, pageIndex) {
+            var formData = new FormData();
+            formData.append('pageSize', pageSize);
+            formData.append('pageIndex', pageIndex);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Users/UserListJson");
+            var butActive = document.getElementsByClassName("active");
+            for (var i of butActive) {
+                i.classList.remove('active');
+            }
+            btn.classList.add('active');
+            xhr.responseType = 'json';
+            xhr.send(formData);
+            xhr.onloadend = function () {
+                addSourceInTable(xhr.response.Data.ListUsers);
+            }
+        }
+
+        function renderGetUserRolesButton(userId) {
+            var btn = document.createElement('button');
+            btn.className = 'btn btn-info';
+            btn.innerHTML = 'Show';
+            btn.addEventListener('click', function (event) { getRoles(userId) });
+            return btn;
+        }
+
+        function renderSaveUserRolesButton(userId,usersRoles) {
+            var btn = document.createElement('button');
+            btn.className = 'btn btn-info';
+            btn.innerHTML = 'Save';
+            btn.addEventListener('click', function (event) { saveRoles(userId,usersRoles) });
+            return btn;
+        }
+
+        function renderUserRoles(userId,usersRoles) {
+            var elemTd = document.createElement("div");
+            var elemSelect = document.createElement("select");
+            elemSelect.setAttribute("multiple", "");
+
+            elemTd.appendChild(elemSelect);
+
+            for (let j = 0; j < allRoles.length; j++) {
+                var elemOption = document.createElement("option");
+                const index = usersRoles.findIndex(role => role.RoleId === allRoles[j].Id);
+                if (index!=-1) {
+                    elemOption.selected = true;
+                }
+
+                elemOption.innerHTML = allRoles[j].Role;
+                elemSelect.appendChild(elemOption);
+            }
+            elemTd.appendChild(renderSaveUserRolesButton(userId,elemSelect));
+            return elemTd;
+        }
+
+        async function getRoles(_userId) {
+
+            const url = '/Users/GetRoles';
+            const data = {
+                UserId: _userId,
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const result = await response.json();
+            var div = renderUserRoles(_userId, result.Data);
+            const td = document.getElementById("roles_" + _userId);
+            td.innerHTML = "";
+            td.appendChild(div);
+        }
+
+        async function saveRoles(_userId, listElemSelect) {
+            var selectedElem = [];
+            for (let i = 0; i < allRoles.length; i++) {
+                if (listElemSelect.options[i].selected) {
+                    selectedElem.push(i);
+                }
+            }
+
+            const url = '/Users/SaveRoles';
+            const data = {
+                UserId: _userId,
+                listRole: selectedElem
+            };
+
+            await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const td = document.getElementById("roles_" + _userId);
+            td.innerHTML = "";
+            td.appendChild(renderGetUserRolesButton(_userId));
+        }
+
+        function addSourceInTable(json) {
+            var tbody = document.getElementById("tbody");
+            var newTr;
+            var newTd;
+            var newBut;
+
+            tbody.innerHTML = "";
+            for (let i = 0; i < json.length; i++) {
+                newTr = document.createElement("tr");;
+                newTr.setAttribute("id", json[i].Id);
+
+                newTd = document.createElement("td");
+                newTd.innerHTML = json[i].Id;
+                newTr.appendChild(newTd);
+
+                newTd = document.createElement("td");
+                newTd.innerHTML = json[i].Name;
+                newTr.appendChild(newTd);
+
+                newTd = document.createElement("td");
+                newTd.innerHTML = json[i].Email;
+                newTr.appendChild(newTd);
+
+                newTd = document.createElement("td");
+                newTd.innerHTML = json[i].Password;
+                newTr.appendChild(newTd);
+
+                newTd = document.createElement("td");
+                newTd.innerHTML = json[i].CreatedDate;
+                newTr.appendChild(newTd);
+
+                newTd = document.createElement("td");
+                newTd.innerHTML = json[i].UpdatedDate;
+                newTr.appendChild(newTd);
+
+                newTd = document.createElement("td");
+                newTd.setAttribute("id", "roles_" + json[i].Id);
+                newTd.appendChild(renderGetUserRolesButton(json[i].Id));
+                newTr.appendChild(newTd);
+                
+                newTd = document.createElement("td");
+                newBut = document.createElement('button')
+                newBut.className = 'btn btn-danger';
+                newBut.innerHTML = 'X';
+                newBut.addEventListener('click', function (event) { deleteUser(json[i].Id) });
+                newTd.appendChild(newBut);
+                newTr.appendChild(newTd);
+
+                tbody.appendChild(newTr);
+            }
+        }
+
+        window.onload = function () {
+            var firstBut = document.getElementById("firstBut");
+            getJson(firstBut,@Model.PageSize,@Model.PageIndex);
+        }
+
+        async function searchUser() {
+            var _nameUser = document.getElementById("nameUser").value;
+
+            const url = '/Users/UserListJson';
+            const data = {
+                nameUser: _nameUser,
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const json = await response.json();
+            addSourceInTable(json.Data.ListUsers);
+        }
+    </script>
+</head>
+
+<body style="background-color:blueviolet; color:white;">
+    <main>
+        <div style="margin:20px 0px 20px 20px">
+            <a href="/Users/CreateUser" class="btn btn-success">CreateUser</a>
+            <a href="/Users/UpdateUser" class="btn btn-dark">UpdateUser</a>
+
+            <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                @for (int i = 1; i <= 6; i++)
+                {
+                    if (Model.PageSize == @i * 50)
+                    {
+                        <option selected name="pageSize" value="@Model.PageSize">@Model.PageSize</option>
+                    }
+                    else
+                    {
+                        <option value=@(i*50)>@(i*50)</option>
+                    }
+                }
+            </select>
+            <input type="submit" class="btn btn-info" value="Get" />
+
+            <div class="input-group" style="width:30%">
+                <input type="search" class="form-control rounded" placeholder="Id/Name/Email" aria-label="Search"
+                       aria-describedby="search-addon" id="nameUser" name="nameUser" value="" />
+                <button type="button" class="btn btn-outline-primary" onclick="searchUser()">Search</button>
+            </div>
+
+        </div>
+        <section style=margin:20px 0px 20px 20px">
+            <div>
+                <table style="width:100%;" class="table bg-dark">
+                    <thead>
+                        <tr style="background-color:#28a745">
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Password</th>
+                            <th>CreatedDate</th>
+                            <th>UpdatedDate</th>
+                            <th>UserRoles</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody" style="margin-bottom:10px">
+                    </tbody>
+                </table>
+            </div>
+            @for (int i = 1; i <= Model.CountPage; i++)
+            {
+                if (Model.PageIndex == @i)
+                {
+                    <input id="firstBut" type="submit" class="btn btn-danger active" onclick="getJson(this,@Model.PageSize, @i)" name="pageIndex" value="@i" />
+                }
+                else
+                {
+                    <input type="submit" class="btn btn-danger" onclick="getJson(this,@Model.PageSize, @i)" name="pageIndex" value="@i" />
+                }
+            }
+        </section>
+    </main>
+    
+</body>
+</html>

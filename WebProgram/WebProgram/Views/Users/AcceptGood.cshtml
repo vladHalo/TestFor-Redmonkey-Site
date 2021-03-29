@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+@section AuthStatus{
+    <a style="position:absolute; right:20px" class="nav-link">
+        <img src="~/Content/Img/OfflineImg.png" width="30" />
+    </a>
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Accept</title>
+    <link rel="stylesheet" href="~/Bootstrap/bootstrap.min.css" type="text/css" />
+</head>
+<body style="background-color:blueviolet;">
+    <div style="text-align:center; position:relative; top:100px">
+        <h2 style="color:white">Welcome</h2>
+        <h4 style="color:white">Id: @Model._Id  Name: @Model._Name</h4>
+        <a href="/Home/Index" style="position:relative; width:180px;" class="btn btn-success">Next</a>
+    </div>
+</body>
+</html>

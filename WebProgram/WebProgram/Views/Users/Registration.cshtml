@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+@section AuthStatus{
+    <a style="position:absolute; right:20px" class="nav-link">
+        <img src="~/Content/Img/OfflineImg.png" width="30" />
+    </a>
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Registration</title>
+    <link rel="stylesheet" href="~/Bootstrap/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/Login.css" type="text/css" />
+</head>
+@using (Html.BeginForm())
+{
+    <body>
+        <div class="contr">
+            <h2>SignUp</h2>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Name</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Name" name="Name" aria-label="Name" aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Email</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Email" name="Email" aria-label="Email" aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Password</span>
+                </div>
+                <input type="password" class="form-control" placeholder="Password" name="Password" aria-label="Password" aria-describedby="basic-addon1">
+            </div>
+            <div>
+                <button class="btn btn-success">SignUp</button>
+            </div>
+            <div>
+                <a class="classHrefR" href="/Users/Login">Login</a>
+            </div>
+        </div>
+    </body>
+}
+</html>

@@ -1,0 +1,19 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+@section AuthStatus {
+    @Html.Partial("_AuthPartial", new WebProgram.Models.Shared.AuthModel() { CurrentUser = Model.CurrentUser })
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>CalculatorMenu</title>
+    <link rel="stylesheet" href="~/Bootstrap/bootstrap.min.css" type="text/css" />
+</head>
+<body style="background-color:blueviolet">
+    <div style="position:relative">
+
+    </div>
+</body>
+</html>

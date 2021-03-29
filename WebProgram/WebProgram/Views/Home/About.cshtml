@@ -1,0 +1,25 @@
+﻿@section AuthStatus {
+    @Html.Partial("_AuthPartial", new WebProgram.Models.Shared.AuthModel() { CurrentUser = Model.CurrentUser })
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>About</title>
+    <link rel="stylesheet" href="~/Bootstrap/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/Contact.css" type="text/css" />
+</head>
+<body style="background-color:blueviolet">
+    <div class="col-sm-6" style="color:white">
+        <h2>About</h2>
+
+        Our online calculators will help you solve problems
+        related to the use of a password generator,random numbers
+        and calculating the number of words in a text. Online calculators allow you to:
+        create strong passwords for your email or website, convert characters to another number system
+        using a code calculator, calculate the number of words in a text and get a number in a given range.
+        Now you do not have to come up with a password and think about how to count words in the text, our
+        calculators will do it quickly and efficiently with minimal time-consuming.
+    </div>
+</body>
+</html>

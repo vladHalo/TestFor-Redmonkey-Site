@@ -1,0 +1,33 @@
+﻿<div id="calcId=@Model.Id">
+    <script async src="~/jsScripts/Calc.js"></script>
+    <link rel="stylesheet" href="~/Content/Calculator.css" type="text/css" />
+    <div>
+        <input type="text" name="number" value="@Model.Number" />
+        <button class="btn btn-danger" type="submit" onclick="removeBtn(@Model.Id,'calcId=')">X</button>
+    </div>
+    <div style="color:white">Result: @Model.Result</div>
+    <div>
+        <button type="submit" name="digit" value="7">7</button>
+        <button type="submit" name="digit" value="8">8</button>
+        <button type="submit" name="digit" value="9">9</button>
+        <button type="submit" name="operation" value="Add">+</button>
+    </div>
+    <div>
+        <button type="submit" name="digit" value="4">4</button>
+        <button type="submit" name="digit" value="5">5</button>
+        <button type="submit" name="digit" value="6">6</button>
+        <button type="submit" name="operation" value="Min">-</button>
+    </div>
+    <div>
+        <button type="submit" name="digit" value="1">1</button>
+        <button type="submit" name="digit" value="2">2</button>
+        <button type="submit" name="digit" value="3">3</button>
+        <button type="submit" name="operation" value="Mul">*</button>
+    </div>
+    <div>
+        <button type="submit" name="operation" value="Clear">C</button>
+        <button type="submit" name="digit" value="0">0</button>
+        <button type="submit" name="operation" value="Res">=</button>
+        <button type="submit" name="operation" value="Div">/</button>
+    </div>
+</div>

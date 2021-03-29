@@ -1,0 +1,140 @@
+﻿@model WebProgram.Models.Calculators.IndexViewModel
+
+<!DOCTYPE html>
+@section AuthStatus {
+    @Html.Partial("_AuthPartial", new WebProgram.Models.Shared.AuthModel() { CurrentUser = Model.CurrentUser })
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>CalculatorMenu</title>
+    <link rel="stylesheet" href="~/Bootstrap/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/Calculator.css" type="text/css" />
+    <script async src="~/jsScripts/Calc.js"></script>
+    <script>
+        var countNewCalc = 0;
+        async function addBtn(countCalc) {
+            const url = '/Calculators/AddCalcJson';
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const json = await response.json();
+            renderCalc(json.Data.Id,countCalc);
+        }
+
+        function renderCalc(id, countCalc) {
+            var operation = ['*', 'Mul', '-', 'Min', '+', 'Add', 'C', 'Clear', '0', '0', '=', 'Res', '/', 'Div']
+            var divMain = document.createElement('div');
+            divMain.id = "calcId=" + id;
+            var div = document.createElement('div');
+
+            var textInp = document.createElement('input');
+            textInp.type = 'text';
+            textInp.name = 'number';
+            div.appendChild(textInp);
+
+            btn = document.createElement('button');
+            btn.type = 'submit';
+            btn.innerHTML = "X";
+            btn.className += 'btn btn-danger';
+            //btn.addEventListener("click", removeBtn(id, 'calcId='));
+            div.appendChild(btn);
+            divMain.appendChild(div);
+
+            div = document.createElement('div');
+            div.style.color = 'white';
+            div.innerHTML = 'Result: 0';
+            divMain.appendChild(div);
+
+            for (let i = 2; i >= 0; i--) {
+                div = document.createElement('div');
+
+                for (let j = 1; j <= 3; j++) {
+                    btn = document.createElement('button');
+                    btn.type = 'submit';
+                    btn.name = 'digit';
+                    btn.value = i * 3 + j;
+                    btn.innerHTML = i * 3 + j;
+                    div.appendChild(btn);
+                }
+                btn = document.createElement('button');
+                btn.type = 'submit';
+                btn.name = 'operation';
+                btn.value = operation[i * 2 + 1];
+                btn.innerHTML = operation[i * 2];
+                div.appendChild(btn);
+                divMain.appendChild(div);
+            }
+
+            div = document.createElement('div');
+            for (let i = 0; i < 8; i += 2) {
+                btn = document.createElement('button');
+                btn.type = 'submit';
+                btn.name = 'operation';
+                btn.value = operation[i + 7];
+                btn.innerHTML = operation[i + 6];
+                div.appendChild(btn);
+            }
+            divMain.appendChild(div);
+            console.log(divMain);
+            var tbodyId = document.getElementById("tbodyId");
+            if ((countCalc + countNewCalc) % 5 === 0) {
+                var trNew = document.createElement('tr');
+                trNew.id = "trId=" + countCalc/5;
+                var tdNew = document.createElement('td');
+                tdNew.appendChild(divMain);
+                trNew.appendChild(tdNew);
+                tbodyId.appendChild(trNew);
+            }
+            else {
+                var numb = Math.ceil((countCalc + countNewCalc) / 5) - 1;
+                console.log(numb);
+                var tr = document.getElementById('trId=' + numb);
+                var td = document.createElement('td');
+                td.appendChild(divMain);
+                tr.appendChild(td);
+                tbodyId.appendChild(tr);
+            }
+            countNewCalc += 1;
+        }
+    </script>
+</head>
+
+<body style="background-color:blueviolet">
+    <div>
+        <button style=" font-size:inherit" class="btn btn-success" type="submit" onclick="addBtn(@Model.ListCalcViewModel.Count)">+</button>
+    </div>
+    <table>
+        <tbody id="tbodyId">
+            @{var number = Math.Ceiling(Model.ListCalcViewModel.Count / 5.0);}
+            @for (int i = 0; i < number; i++)
+            {
+                <tr id="trId=@i">
+                    @if (i == number - 1)
+                    {
+                        for (int j = 0; j < Model.ListCalcViewModel.Count % 5; j++)
+                        {
+                            <td>
+                                @Html.Partial("_CalculatorsPartial", Model.ListCalcViewModel[5 * i + j])
+                            </td>
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < 5; j++)
+                        {
+                            <td>
+                                @Html.Partial("_CalculatorsPartial", Model.ListCalcViewModel[5 * i + j])
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

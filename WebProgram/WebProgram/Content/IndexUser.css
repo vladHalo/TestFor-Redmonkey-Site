@@ -1,0 +1,8 @@
+﻿#disableColor {
+    border: none;
+    background: none
+}
+
+#disableColor:disabled {
+    color:white;    
+}

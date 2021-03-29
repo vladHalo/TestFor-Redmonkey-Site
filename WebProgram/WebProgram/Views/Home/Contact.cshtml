@@ -1,0 +1,27 @@
+﻿@section AuthStatus {
+    @Html.Partial("_AuthPartial", new WebProgram.Models.Shared.AuthModel() { CurrentUser = Model.CurrentUser })
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Contact</title>
+    <link rel="stylesheet" href="~/Bootstrap/bootstrap.min.css" type="text/css" />
+</head>
+<body style="background-color:blueviolet">
+    <div class="col-sm-6" style="color:white">
+        <h2>Contact</h2>
+
+        <address>
+            One Microsoft Way<br />
+            Ukraine,Uzhgorod 9802-6499<br />
+            Phone: 0954334453
+        </address>
+
+        <address>
+            <strong>Support:</strong>   <a style="color:black" href="vladSupport@example.com">Support@example.com</a><br />
+            <strong>Marketing:</strong> <a style="color:black" href="vladMarketing@example.com">Marketing@example.com</a>
+        </address>
+    </div>
+</body>
+</html>

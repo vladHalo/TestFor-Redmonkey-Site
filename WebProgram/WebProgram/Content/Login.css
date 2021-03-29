@@ -1,0 +1,26 @@
+﻿body{
+    background-color:blueviolet;
+}
+.contr {
+    width:500px;
+    position:relative;
+    left:30%;
+    top:100px;
+}
+h2{
+    color:white;
+    position:relative;
+    left:40%;
+}
+.classHref{
+    color:white;
+    position:relative;
+    left:78%;
+    top:-30px;
+}
+.classHrefR {
+    color: white;
+    position: relative;
+    left: 91%;
+    top: -30px;
+}

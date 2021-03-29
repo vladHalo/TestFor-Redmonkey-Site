@@ -1,0 +1,13 @@
+﻿@model WebProgram.Models.Shared.AuthModel
+@if (Model.CurrentUser != null)
+{
+    <a style="position:absolute; right:20px" class="nav-link" href="/Users/Logout">
+        <img src="~/Content/Img/LogoutImg.png" width="30" />
+    </a>
+}
+else
+{
+    <a style="position:absolute; right:20px" class="nav-link" href="/Users/Login">
+        <img src="~/Content/Img/LoginImg.png" width="30" />
+    </a>
+}
